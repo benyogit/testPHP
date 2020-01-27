@@ -1,0 +1,4 @@
+product timestamp: ["\u003Cfoo\u003E","'bar'","\"baz\"","&blong&","\u00e9"]
+product list:
+["\u003Cfoo\u003E","'bar'","\"baz\"","&blong&","\u00e9"]
+p
