@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 $sql = "SELECT id, name, price, material, description
         FROM tbl_products 
         WHERE status=1
-        LIMIT 20";
+        LIMIT 5";
 $result = $conn->query($sql);
 
 
@@ -28,9 +28,9 @@ if ($result->num_rows > 0) {
     echo "0 results";
 }
 $conn->close();
-write_to_log("Products", $data); 
+// write_to_log("Products", $data); 
 
-// var_dump($data);die;
+//  var_dump($data);die;
 
 ?>
 
@@ -53,6 +53,34 @@ write_to_log("Products", $data);
         }
     </style>
     <script>
+    $(document).ready(function(){
+        $('select').on('change', function() {
+            var id = $(this).children(":selected").attr("value");
+             console.log( id  );
+             
+            $.ajax({
+                type : "POST",
+                url : "functions2.php",
+				data: {id},
+                cache : false,
+                success : function(res) {
+                    
+                       console.log(res);
+                       var obj = JSON.parse(res);
+                       console.log(obj[0].name);
+                       var img =`https://cdn.onecklace.com/products/${obj[0].id}/product_${obj[0].id}_1_225.jpeg`;
+
+                         $(".product").html("<div class='card'>\
+                                                <img src='"+img +"' alt='Avatar' style='width:100%'>\
+                                                <div class='container'>\
+                                                    <h4><b>"+ obj[0].name+"</b></h4>\
+                                                    <p>"+ obj[0].price+"</p>\
+                                                </div>\
+                                            </div>");
+                }
+            });
+          });
+    });
 
     </script>
     </head>
@@ -65,15 +93,22 @@ write_to_log("Products", $data);
         </div>
 
         <div class="container">
+        <div class="form-group">
+                <label for="sel1">Select list:</label>
+                    <select class="form-control" id="sel1">
+
         <?php
         for ($i = 0; $i <count($data); $i++) {
-            echo "<div class='card' >
-                    <a href='product.php?id=".$data[$i]["id"]."&material=".$data[$i]["material"]."'>
-                        <p>" .$data[$i]["name"]. "</p>
-                    </a>
-                </div>" ;
+            echo  '<option value="'.$data[$i]['id'].'"  >'.$data[$i]['name'].'</option>';
         }
+      
         ?>
+          </select>
+
+          <div class="product"> 
+          
+          </div>
+        </div>
         </div>
 
     </body>
